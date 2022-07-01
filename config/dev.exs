@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :live_cutie, LiveCutie.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "live_studio",
+  password: "live_studio",
   hostname: "localhost",
   database: "live_cutie_dev",
   stacktrace: true,
