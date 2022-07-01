@@ -3,3 +3,21 @@
 @import "tailwindcss/utilities";
 @import "./phoenix.css";
 @import "./live_view.css";
+
+@layer base {
+    h1 {
+        @apply text-center text-cool-gray-900 font-extrabold text-2xl mb-8;
+    }
+
+    h2 {
+        @apply text-xl;
+    }
+
+    h3 {
+        @apply text-lg;
+    }
+
+    a {
+        @apply text-blue-600 underline;
+    }
+}
