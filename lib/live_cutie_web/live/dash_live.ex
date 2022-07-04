@@ -4,11 +4,9 @@ defmodule LiveCutieWeb.DashLive do
   alias LiveCutie.Dash
 
   def mount(_params, _session, socket) do
-    if connected?(socket) do
-      :timer.send_interval(2000, self(), :self_refresh)
-    end
+    socket = socket |> assign_stats() |> assign(refresh: 1)
 
-    socket = assign_stats(socket)
+    if connected?(socket), do: schedule_refresh(socket)
     {:ok, socket}
   end
 
@@ -42,26 +40,59 @@ defmodule LiveCutieWeb.DashLive do
           </span>
         </div>
       </div>
-      <button
-        phx-click="refresh"
-        class="inline-flex items-center px-4 py-2 border border-indigo-300 text-sm shadow-sm leading-6 font-medium rounded-md text-indigo-700 bg-indigo-100 transition ease-in-out duration-150 outline-none active:bg-indigo-200 hover:bg-white">
-        <img src="images/sync-solid.svg" class="mr-2 h-4 w-4" /> Refresh
-      </button>
+      <div class="controls flex items-center justify-end">
+        <form phx-change="refresh-timer" class="flex items-center">
+          <label
+            for="refresh"
+            class="uppercase tracking-wide text-indigo-800 text-xs font-semibold mr-2"
+          >
+            Refresh every:
+          </label>
+          <select
+            name="refresh"
+            class="focus:outline-none bg-white border-indigo-500 appearance-none bg-slate-200 border-indigo-300 border text-indigo-700 py-2 px-4 rounded-lg leading-tight font-semibold cursor-pointer mr-2 h-10"
+          >
+            <%= options_for_select(refresh_options(), @refresh) %>
+          </select>
+        </form>
+
+        <button
+          phx-click="refresh"
+          class="inline-flex items-center px-4 py-2 border border-indigo-300 text-sm shadow-sm leading-6 font-medium rounded-md text-indigo-700 bg-indigo-100 transition ease-in-out duration-150 outline-none active:bg-indigo-200 hover:bg-white"
+        >
+          <img src="images/sync-solid.svg" class="mr-2 h-4 w-4" /> Refresh
+        </button>
+      </div>
     </div>
     """
   end
 
   def handle_event("refresh", _, socket) do
-    socket = assign_stats(socket)
+    socket = socket |> assign_stats() |> schedule_refresh()
+    {:noreply, socket}
+  end
+
+  def handle_event("refresh-timer", %{"refresh" => refresh}, socket) do
+    refresh = String.to_integer(refresh)
+    socket = assign(socket, refresh: refresh)
     {:noreply, socket}
   end
 
   def handle_info(:self_refresh, socket) do
-    socket = assign_stats(socket)
+    socket = socket |> assign_stats() |> schedule_refresh()
     {:noreply, socket}
   end
 
   defp assign_stats(socket) do
     assign(socket, lumens: Dash.lumens(), temperature: Dash.temperature(), co2: Dash.co2())
+  end
+
+  defp refresh_options do
+    [{"1s", 1}, {"5s", 5}, {"15s", 15}, {"30s", 30}, {"60s", 60}]
+  end
+
+  defp schedule_refresh(socket) do
+    Process.send_after(self(), :self_refresh, socket.assigns.refresh * 1000)
+    socket
   end
 end
