@@ -27,7 +27,7 @@ defmodule LiveCutieWeb.SliderLive do
             </span>
           </div>
           <form phx-change="update">
-            <input type="range" min="0" max="4" name="level" value="2" />
+            <input type="range" min="0" max="4" name="level" value="2" phx-debounce="250" />
           </form>
           <div class="btus text-2xl leading-none text-slate-900 mt-4">
             <strong><%= @btus %></strong> BTU/h
