@@ -34,7 +34,7 @@
 }
 
 .row h2 {
-  @apply text-2xl font-semibold mb-4 font-normal;
+  @apply text-2xl font-semibold mb-4;
 }
 
 .row .column ul {
