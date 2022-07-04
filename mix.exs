@@ -51,7 +51,8 @@ defmodule LiveCutie.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:faker, "~> 0.17.0"},
       {:number, "~> 1.0"},
-      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev}
+      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      {:timex, "~> 3.0"}
     ]
   end
 

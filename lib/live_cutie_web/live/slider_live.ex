@@ -16,7 +16,7 @@ defmodule LiveCutieWeb.SliderLive do
       <div class="card bg-white shadow rounded-lg shadow-lg">
         <div class="content p-6">
           <div class="level inline-flex items-center mb-8">
-            <img src="images/fan-solid.svg" class="w-10 pr-2">
+            <img src="images/fan-solid.svg" class="w-10 pr-2" />
             <span class="text-xl font-semibold text-slate-700">
               The current level is <strong><%= Btus.human_level(@level) %></strong>.
             </span>
