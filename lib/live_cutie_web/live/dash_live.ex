@@ -4,7 +4,7 @@ defmodule LiveCutieWeb.DashLive do
   alias LiveCutie.Dash
 
   def mount(_params, _session, socket) do
-    socket = socket |> assign_stats() |> assign(refresh: 1)
+    socket = socket |> assign_stats() |> assign(refresh: 5)
 
     if connected?(socket), do: schedule_refresh(socket)
     {:ok, socket}
@@ -41,6 +41,9 @@ defmodule LiveCutieWeb.DashLive do
         </div>
       </div>
       <div class="controls flex items-center justify-end">
+        <span class="px-4 py-2 uppercase tracking-wide text-indigo-800 text-xs font-semibold mr-2">
+          Last update: <%= Timex.format!(@last_updated_at, "%H:%M:%S", :strftime) %>
+        </span>
         <form phx-change="refresh-timer" class="flex items-center">
           <label
             for="refresh"
@@ -84,7 +87,12 @@ defmodule LiveCutieWeb.DashLive do
   end
 
   defp assign_stats(socket) do
-    assign(socket, lumens: Dash.lumens(), temperature: Dash.temperature(), co2: Dash.co2())
+    assign(socket,
+      lumens: Dash.lumens(),
+      temperature: Dash.temperature(),
+      co2: Dash.co2(),
+      last_updated_at: Timex.now()
+    )
   end
 
   defp refresh_options do
