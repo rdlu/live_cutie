@@ -1,0 +1,178 @@
+defmodule LiveCutieWeb.AutocompleteLive do
+  use LiveCutieWeb, :live_view
+  alias LiveCutie.Repositories.Places
+  alias LiveCutie.Repositories.Cities
+
+  def mount(_params, _session, socket) do
+    socket =
+      assign(socket,
+        zip: "",
+        city: "",
+        places: [],
+        cities: [],
+        loading: false,
+        search_complete: false
+      )
+
+    {:ok, socket}
+  end
+
+  def render(assigns) do
+    ~H"""
+    <h1>Find more places</h1>
+    <div id="search" class="max-w-3xl mx-auto text-center">
+      <form
+        id="search-by-zip"
+        phx-submit="search-by-zip"
+        class="inline-flex items-center focus:outline-none"
+      >
+        <input
+          type="text"
+          name="zip"
+          value={@zip}
+          placeholder="Zip Code"
+          autofocus
+          autocomplete="off"
+          readonly={@loading}
+          class="h-10 border border-slate-400 rounded-l-md bg-white px-5 text-base"
+        />
+
+        <button
+          type="submit"
+          class="h-10 px-4 py-2 bg-transparent border border-slate-400 border-l-0 rounded-r-md transition ease-in-out duration-150 outline-none hover:bg-slate-500"
+        >
+          <img src="images/search-location-solid.svg" class="h-4 w-4" />
+        </button>
+      </form>
+
+      <form
+        id="search-by-city"
+        phx-submit="search-by-city"
+        phx-change="suggest-city"
+        class="inline-flex items-center focus:outline-none"
+      >
+        <input
+          type="text"
+          name="city"
+          value={@city}
+          placeholder="City"
+          autocomplete="off"
+          list="cities"
+          phx-debounce="1000"
+          readonly={@loading}
+          class="h-10 border border-slate-400 rounded-l-md bg-white px-5 text-base"
+        />
+
+        <button
+          type="submit"
+          class="h-10 px-4 py-2 bg-transparent border border-slate-400 border-l-0 rounded-r-md transition ease-in-out duration-150 outline-none hover:bg-slate-500"
+        >
+          <img src="images/search-solid.svg" class="h-4 w-4" />
+        </button>
+      </form>
+
+      <datalist id="cities">
+        <%= for city <- @cities do %>
+          <option value={city}><%= city %></option>
+        <% end %>
+      </datalist>
+
+      <%= if @loading do %>
+        <div class="loader px-6 py-4">
+          Loading...
+        </div>
+      <% end %>
+
+      <div class="places mt-8 bg-white shadow overflow-hidden rounded-md">
+        <ul>
+          <%= for place <- @places do %>
+            <li class="border-t border-slate-300 px-6 py-4 hover:bg-indigo-100">
+              <div class="first-line flex items-center justify-between">
+                <div class="name text-lg leading-5 font-medium text-indigo-600 truncate">
+                  <%= place.name %>
+                </div>
+                <div class="status ml-2 flex-shrink-0 flex">
+                  <%= if place.open do %>
+                    <span class="open inline-flex items-center px-3 py-1 rounded-md text-xs font-medium leading-5 rounded-full bg-green-200 text-green-800">
+                      Open
+                    </span>
+                  <% else %>
+                    <span class="closed inline-flex items-center px-3 py-1 rounded-md text-xs font-medium leading-5 rounded-full bg-red-200 text-red-800">
+                      Closed
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="second-line mt-2 flex justify-between">
+                <div class="street mt-0 flex items-center text-base leading-5 text-slate-400">
+                  <img src="images/location-arrow-solid.svg" class="flex-shrink-0 mr-1 h-5 w-5" />
+                  <%= place.street %>
+                </div>
+                <div class="phone_number mt-0 flex items-center text-sm leading-5 text-slate-400">
+                  <img src="images/phone-solid.svg" class="flex-shrink-0 mr-2 h-5 w-5" />
+                  <%= place.phone_number %>
+                </div>
+              </div>
+            </li>
+          <% end %>
+          <%= if @search_complete and Enum.empty?(@places) do %>
+            <li class="border-t border-slate-300 px-6 py-4 hover:bg-indigo-100">
+              Nothing found for <%= @zip %><%= @city %>.
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    """
+  end
+
+  def handle_event("search-by-zip", %{"zip" => zip}, socket) do
+    send(self(), {:run_search, zip})
+
+    socket = assign(socket, zip: zip, places: [], loading: true, search_complete: false)
+    {:ok, socket}
+    {:noreply, socket}
+  end
+
+  def handle_event("search-by-city", %{"city" => city}, socket) do
+    send(self(), {:run_city_search, city})
+
+    socket = assign(socket, city: city, cities: [], loading: true, search_complete: false)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("suggest-city", %{"city" => prefix}, socket) do
+    socket = assign(socket, cities: Cities.suggest(prefix), city: prefix)
+    {:noreply, socket}
+  end
+
+  def handle_info({:run_search, zip}, socket) do
+    socket =
+      case Places.search_by_zip(zip) do
+        [] ->
+          socket
+          |> assign(places: [], loading: false, search_complete: true)
+
+        places ->
+          socket |> clear_flash |> assign(places: places, loading: false, search_complete: true)
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:run_city_search, city}, socket) do
+    case Places.search_by_city(city) do
+      [] ->
+        socket =
+          socket
+          |> assign(places: [], loading: false, search_complete: true)
+
+        {:noreply, socket}
+
+      places ->
+        socket = assign(socket, places: places, loading: false, search_complete: true)
+        {:noreply, socket}
+    end
+  end
+end

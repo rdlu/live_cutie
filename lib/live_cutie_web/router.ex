@@ -22,6 +22,7 @@ defmodule LiveCutieWeb.Router do
     live "/slider", SliderLive
     live "/dash", DashLive
     live "/search", SearchLive
+    live "/complete", AutocompleteLive
   end
 
   # Other scopes may use custom stacks.
