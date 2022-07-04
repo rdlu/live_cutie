@@ -6,7 +6,7 @@
 
 @layer base {
     h1 {
-        @apply text-center text-cool-gray-900 font-extrabold text-2xl mb-8;
+        @apply text-center text-slate-900 font-extrabold text-2xl mb-8;
     }
 
     h2 {
