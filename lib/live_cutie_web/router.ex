@@ -19,6 +19,7 @@ defmodule LiveCutieWeb.Router do
 
     get "/", PageController, :index
     live "/light", LightLive
+    live "/slider", SliderLive
   end
 
   # Other scopes may use custom stacks.
