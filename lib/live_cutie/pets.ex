@@ -21,6 +21,25 @@ defmodule LiveCutie.Pets do
     Repo.all(Pet)
   end
 
+  def list_pets(criteria) when is_list(criteria) do
+    query = from(b in Pet)
+
+    Enum.reduce(criteria, query, fn
+      {:species, ""}, query ->
+        query
+
+      {:species, species}, query ->
+        from q in query, where: q.species == ^species
+
+      {:cuteness, [""]}, query ->
+        query
+
+      {:cuteness, cuteness}, query ->
+        from q in query, where: q.cuteness in ^cuteness
+    end)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single pet.
 
