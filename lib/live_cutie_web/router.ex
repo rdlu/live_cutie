@@ -24,6 +24,7 @@ defmodule LiveCutieWeb.Router do
     live "/search", SearchLive
     live "/complete", AutocompleteLive
     live "/filter", FilterLive
+    live "/poke", PokeLive
   end
 
   # Other scopes may use custom stacks.
