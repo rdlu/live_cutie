@@ -14,6 +14,7 @@ defmodule LiveCutie.PokeGames.PokeGame do
     field :played, Ecto.Enum, values: [:yes, :no, :soon], default: :no
     field :starters, {:array, :string}
     field :related, :id
+    field :slug, :string
 
     timestamps()
   end
@@ -31,15 +32,23 @@ defmodule LiveCutie.PokeGames.PokeGame do
       :legendary,
       :played,
       :favorite,
-      :streaming
+      :streaming,
+      :slug
     ])
+    |> update_slug
     |> validate_required([
       :name,
       :generation,
       :platform,
       :box_image,
       :description,
-      :starters
+      :starters,
+      :slug
     ])
+  end
+
+  defp update_slug(changeset) do
+    changeset
+    |> put_change(:slug, Slug.slugify(changeset.changes.name))
   end
 end

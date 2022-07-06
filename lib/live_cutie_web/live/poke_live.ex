@@ -26,6 +26,18 @@ defmodule LiveCutieWeb.PokeLive do
     {:noreply, socket}
   end
 
+  def handle_params(%{"slug" => slug}, _url, socket) do
+    game = PokeGames.get_by_slug(slug)
+
+    socket =
+      assign(socket,
+        selected_game: game,
+        page_title: "What's up #{game.name}?"
+      )
+
+    {:noreply, socket}
+  end
+
   def handle_params(_, _url, socket) do
     {:noreply, socket}
   end
@@ -48,7 +60,7 @@ defmodule LiveCutieWeb.PokeLive do
   end
 
   defp platform_img(game) do
-    "/images/hardware/#{Macro.underscore(String.replace(game.platform, " ", ""))}.svg"
+    "/images/hardware/#{Slug.slugify(game.platform)}.svg"
   end
 
   defp simple_list(list) do

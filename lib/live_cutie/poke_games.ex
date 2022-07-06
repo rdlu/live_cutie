@@ -37,6 +37,8 @@ defmodule LiveCutie.PokeGames do
   """
   def get_poke_game!(id), do: Repo.get!(PokeGame, id)
 
+  def get_by_slug(slug), do: Repo.get_by(PokeGame, slug: slug)
+
   @doc """
   Creates a poke_game.
 

@@ -9,7 +9,7 @@
               Routes.live_path(
                 @socket,
                 __MODULE__,
-                id: game.id
+                slug: game.slug
               ),
             class:
               "text-sm text-white leading-5 font-medium flex items-center px-2 py-3 rounded-md mb-2 hover:text-black hover:bg-indigo-300 #{if(game == @selected_game, do: "active bg-indigo-900")}"

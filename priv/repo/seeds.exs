@@ -11,7 +11,7 @@
 # and so on) as they will fail if something goes wrong.
 alias LiveCutie.Repo
 alias LiveCutie.Pets.Pet
-alias LiveCutie.PokeGames.PokeGame
+alias LiveCutie.PokeGames
 
 %Pet{
   name: "Fido",
@@ -61,7 +61,7 @@ alias LiveCutie.PokeGames.PokeGame
 }
 |> Repo.insert!()
 
-%PokeGame{
+PokeGames.create_poke_game(%{
   name: "Yellow",
   description: "This is a poke game",
   platform: "Game Boy",
@@ -72,10 +72,9 @@ alias LiveCutie.PokeGames.PokeGame
   legendary: ["Articuno", "Zapdos", "Moltres", "Mewtwo"],
   starters: ["Pikachu"],
   streaming: false
-}
-|> Repo.insert!()
+})
 
-%PokeGame{
+PokeGames.create_poke_game(%{
   name: "HeartGold",
   description: "This is a poke game",
   platform: "Nintendo DS",
@@ -101,10 +100,9 @@ alias LiveCutie.PokeGames.PokeGame
   ],
   starters: ["Chikorita", "Cyndaquil", "Totodile"],
   streaming: false
-}
-|> Repo.insert!()
+})
 
-%PokeGame{
+PokeGames.create_poke_game(%{
   name: "SoulSilver",
   description: "This is a poke game",
   platform: "Nintendo DS",
@@ -130,5 +128,4 @@ alias LiveCutie.PokeGames.PokeGame
   ],
   starters: ["Chikorita", "Cyndaquil", "Totodile"],
   streaming: true
-}
-|> Repo.insert!()
+})
