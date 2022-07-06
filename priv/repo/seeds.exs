@@ -12,6 +12,8 @@
 alias LiveCutie.Repo
 alias LiveCutie.Pets.Pet
 alias LiveCutie.PokeGames
+alias LiveCutie.Monsters
+alias LiveCutie.Monsters.Monster
 
 %Pet{
   name: "Fido",
@@ -129,3 +131,12 @@ PokeGames.create_poke_game(%{
   starters: ["Chikorita", "Cyndaquil", "Totodile"],
   streaming: true
 })
+
+for i <- 1..500 do
+  Monsters.create_monster(%{
+    name: Faker.Pokemon.name(),
+    national_id: i,
+    species: "some species",
+    types: Enum.random(Monster.combined_types())
+  })
+end

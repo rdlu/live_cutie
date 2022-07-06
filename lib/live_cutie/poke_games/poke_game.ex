@@ -47,8 +47,8 @@ defmodule LiveCutie.PokeGames.PokeGame do
     ])
   end
 
-  defp update_slug(changeset) do
+  defp update_slug(changeset, source \\ :name) do
     changeset
-    |> put_change(:slug, Slug.slugify(changeset.changes.name))
+    |> put_change(:slug, Slug.slugify(changeset.changes[source]))
   end
 end
