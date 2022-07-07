@@ -134,7 +134,7 @@ PokeGames.create_poke_game(%{
 
 for i <- 1..500 do
   Monsters.create_monster(%{
-    name: Faker.Pokemon.name(),
+    name: Faker.Cat.name(),
     national_id: i,
     species: "some species",
     types: Enum.random(Monster.combined_types())

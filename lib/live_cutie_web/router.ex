@@ -25,6 +25,7 @@ defmodule LiveCutieWeb.Router do
     live "/complete", AutocompleteLive
     live "/filter", FilterLive
     live "/poke", PokeLive
+    live "/monsters", MonstersLive
   end
 
   # Other scopes may use custom stacks.

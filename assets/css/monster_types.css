@@ -1,0 +1,71 @@
+.type-normal {
+  @apply bg-gray-400;
+}
+
+.type-fire {
+  @apply bg-red-400;
+}
+
+.type-water {
+  @apply bg-blue-400;
+}
+
+.type-electric {
+  @apply bg-yellow-400;
+}
+
+.type-grass {
+  @apply bg-emerald-400;
+}
+
+.type-ice {
+  @apply bg-cyan-400;
+}
+
+.type-fighting {
+  @apply bg-orange-400;
+}
+
+.type-poison {
+  @apply bg-purple-400;
+}
+
+.type-ground {
+  @apply bg-amber-600;
+}
+
+.type-flying {
+  @apply bg-sky-300;
+}
+
+.type-psychic {
+  @apply bg-rose-400;
+}
+
+.type-bug {
+  @apply bg-green-500;
+}
+
+.type-rock {
+  background-color: #bbaa66;
+}
+
+.type-ghost {
+  @apply bg-indigo-600;
+}
+
+.type-dragon {
+  @apply bg-indigo-500;
+}
+
+.type-dark {
+  @apply bg-gray-600;
+}
+
+.type-steel {
+  background-color: #775544;
+}
+
+.type-fairy {
+  @apply bg-fuchsia-400;
+}

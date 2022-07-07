@@ -32,8 +32,13 @@
     ) %>
   </li>
   <li class="mt-3">
-    <%= live_redirect("Poke List (Navigation and Params)",
+    <%= live_redirect("Poket Stream (Navigation and Params)",
       to: Routes.live_path(@socket, LiveCutieWeb.PokeLive)
+    ) %>
+  </li>
+  <li class="mt-3">
+    <%= live_redirect("Monster List (Pagination)",
+      to: Routes.live_path(@socket, LiveCutieWeb.MonstersLive)
     ) %>
   </li>
 </ul>

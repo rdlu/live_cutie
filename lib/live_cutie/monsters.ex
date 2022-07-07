@@ -21,6 +21,21 @@ defmodule LiveCutie.Monsters do
     Repo.all(Monster)
   end
 
+  def list_monsters(criteria) when is_list(criteria) do
+    query = from(v in Monster)
+
+    Enum.reduce(criteria, query, fn
+      {:paginate, %{page: page, per_page: per_page}}, query ->
+        from q in query,
+          offset: ^((page - 1) * per_page),
+          limit: ^per_page
+
+      {:sort, %{sort_by: sort_by, sort_order: sort_order}}, query ->
+        from q in query, order_by: [{^sort_order, ^sort_by}]
+    end)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single monster.
 

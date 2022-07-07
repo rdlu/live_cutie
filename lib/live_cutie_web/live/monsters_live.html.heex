@@ -1,0 +1,88 @@
+<h1>Monsters List</h1>
+<div id="monsters" class="max-w-4xl mx-auto">
+  <form phx-change="select-per-page" class="flex items-center justify-end mb-4">
+    Show
+    <select
+      name="per-page"
+      class="appearance-none bg-slate-200 border border-slate-400 text-slate-700 py-1 px-3 rounded-lg leading-tight font-semibold cursor-pointer text-sm mx-1 focus:outline-none focus:bg-slate-200 focus:border-slate-500"
+    >
+      <%= options_for_select([5, 10, 15, 20], @options.per_page) %>
+    </select>
+    <label for="per-page">per page</label>
+  </form>
+  <div class="wrapper mb-4 align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b border-slate-300">
+    <table class="min-w-full">
+      <thead>
+        <tr>
+          <%= for header <- ~W|ID Name Types| do %>
+            <th class="bg-transparent px-6 py-4 border-b border-slate-300 bg-indigo-700 text-base leading-4 font-medium uppercase tracking-wider text-center text-white">
+              <%= header %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <%= for monster <- @monsters do %>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap border-b border-slate-300 text-lg leading-5 font-medium text-slate-900 text-center">
+              <%= monster.national_id %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap border-b border-slate-300 text-lg leading-5 font-medium text-slate-900 text-center">
+              <%= monster.name %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap border-b border-slate-300 text-lg leading-5 font-medium text-gray-100 text-center">
+              <%= for type <- monster.types do %>
+                <strong
+                  class={
+                    "border border-gray-600 rounded-lg px-2 py-2 mr-2 shadow-sm text-xs uppercase type-#{type}"
+                  }
+                  style="text-shadow: 1px 1px 2px black;"
+                >
+                  <%= type %>
+                </strong>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="footer text-center bg-white max-w-4xl mx-auto text-lg py-8">
+      <div class="pagination inline-flex shadow-sm">
+        <%= if @options.page > 1 do %>
+          <%= pagination_link(
+            @socket,
+            "Previous",
+            @options.page - 1,
+            @options.per_page,
+            "previous rounded-l-md"
+          ) %>
+        <% end %>
+        <%= if @options.page > 3 do %>
+          <%= pagination_link(
+            @socket,
+            "First",
+            1,
+            @options.per_page,
+            "first"
+          ) %>
+        <% end %>
+        <%= for i <- (@options.page - 2)..(@options.page + 2), i > 0 do %>
+          <%= pagination_link(
+            @socket,
+            i,
+            i,
+            @options.per_page,
+            if(i == @options.page, do: "active bg-indigo-700 text-white")
+          ) %>
+        <% end %>
+        <%= pagination_link(
+          @socket,
+          "Next",
+          @options.page + 1,
+          @options.per_page,
+          "next rounded-r-md"
+        ) %>
+      </div>
+    </div>
+  </div>
+</div>
