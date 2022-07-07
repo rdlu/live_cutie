@@ -14,9 +14,9 @@
     <table class="min-w-full">
       <thead>
         <tr>
-          <%= for header <- ~W|ID Name Types| do %>
+          <%= for {field, label} <- [national_id: "ID", name: "Name", types: "Types"] do %>
             <th class="bg-transparent px-6 py-4 border-b border-slate-300 bg-indigo-700 text-base leading-4 font-medium uppercase tracking-wider text-center text-white">
-              <%= header %>
+              <%= sort_link(@socket, label, field, @options) %>
             </th>
           <% end %>
         </tr>
@@ -53,7 +53,7 @@
             @socket,
             "Previous",
             @options.page - 1,
-            @options.per_page,
+            @options,
             "previous rounded-l-md"
           ) %>
         <% end %>
@@ -62,7 +62,7 @@
             @socket,
             "First",
             1,
-            @options.per_page,
+            @options,
             "first"
           ) %>
         <% end %>
@@ -71,7 +71,7 @@
             @socket,
             i,
             i,
-            @options.per_page,
+            @options,
             if(i == @options.page, do: "active bg-indigo-700 text-white")
           ) %>
         <% end %>
@@ -79,7 +79,7 @@
           @socket,
           "Next",
           @options.page + 1,
-          @options.per_page,
+          @options,
           "next rounded-r-md"
         ) %>
       </div>
