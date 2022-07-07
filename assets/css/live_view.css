@@ -107,7 +107,6 @@
   }
 }
 
-
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
@@ -143,7 +142,5 @@
 }
 
 .invalid-feedback {
-  color: #a94442;
-  display: block;
-  margin: -1rem 0 2rem;
+  @apply m-0 mt-2 text-sm text-red-600;
 }

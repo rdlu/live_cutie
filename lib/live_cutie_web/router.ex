@@ -25,6 +25,7 @@ defmodule LiveCutieWeb.Router do
     live "/complete", AutocompleteLive
     live "/filter", FilterLive
     live "/poke", PokeLive
+    live "/poke/new", PokeLive, :new
     live "/monsters", MonstersLive
   end
 

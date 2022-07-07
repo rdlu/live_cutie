@@ -3,7 +3,9 @@ defmodule LiveCutie.PokeGames.PokeGame do
   import Ecto.Changeset
 
   schema "poke_games" do
-    field :box_image, :string
+    field :box_image, :string,
+      default: "https://placeholder.pics/svg/300/DEDEDE/555555/No%20cover%20yet"
+
     field :description, :string
     field :favorite, :boolean, default: false
     field :streaming, :boolean, default: false
@@ -12,7 +14,7 @@ defmodule LiveCutie.PokeGames.PokeGame do
     field :name, :string
     field :platform, :string
     field :played, Ecto.Enum, values: [:yes, :no, :soon], default: :no
-    field :starters, {:array, :string}
+    field :starters, {:array, :string}, default: ["Pikachu"]
     field :related, :id
     field :slug, :string
 
@@ -26,16 +28,14 @@ defmodule LiveCutie.PokeGames.PokeGame do
       :name,
       :generation,
       :platform,
-      :box_image,
       :description,
       :starters,
       :legendary,
       :played,
       :favorite,
-      :streaming,
-      :slug
+      :streaming
     ])
-    |> update_slug
+    |> update_slug()
     |> validate_required([
       :name,
       :generation,
@@ -45,10 +45,36 @@ defmodule LiveCutie.PokeGames.PokeGame do
       :starters,
       :slug
     ])
+    |> validate_length(:name, min: 2, max: 100)
+    |> validate_length(:starters, min: 1, max: 3)
+    |> validate_number(:generation, greater_than: 0)
+    |> validate_inclusion(:platform, platforms_list())
   end
 
   defp update_slug(changeset, source \\ :name) do
-    changeset
-    |> put_change(:slug, Slug.slugify(changeset.changes[source]))
+    IO.inspect(changeset)
+
+    if changeset.changes[source] do
+      changeset
+      |> put_change(:slug, Slug.slugify(changeset.changes[source] || ""))
+    else
+      changeset
+    end
+  end
+
+  def platforms_list do
+    [
+      "Game Boy",
+      "Game Boy Color",
+      "Game Boy Advance",
+      "Nintendo DS",
+      "Nintendo 3DS",
+      "Nintendo Switch",
+      "Wii",
+      "Wii U",
+      "NES",
+      "SNES",
+      "Nintendo 64"
+    ]
   end
 end

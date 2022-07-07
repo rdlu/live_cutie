@@ -18,7 +18,7 @@ defmodule LiveCutie.PokeGames do
 
   """
   def list_poke_games do
-    Repo.all(PokeGame)
+    Repo.all(from s in PokeGame, order_by: [desc: s.id])
   end
 
   @doc """
