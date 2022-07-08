@@ -22,6 +22,8 @@ Hooks.InfiniteScroll = {
   },
 };
 
+import Pikaday from "pikaday";
+
 // Define a mounted callback and instantiated a
 // flatpickr instance using this.el as the element.
 // When a date is picked, use this.pushEvent()
@@ -29,15 +31,15 @@ Hooks.InfiniteScroll = {
 // date string as the payload.
 Hooks.DatePicker = {
   mounted() {
-    flatpickr(this.el, {
-      enableTime: false,
-      dateFormat: "F d, Y",
-      onChange: this.handleDatePicked.bind(this),
+    var picker = new Pikaday({
+      field: this.el,
+      onSelect: this.handleDatePicked.bind(this),
     });
   },
 
-  handleDatePicked(selectedDates, dateStr, instance) {
-    this.pushEvent("dates-picked", dateStr);
+  handleDatePicked(pick) {
+    this.pushEvent("dates-picked", pick.toISOString());
+    this.el.value = pick.toLocaleDateString();
   },
 };
 

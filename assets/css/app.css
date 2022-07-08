@@ -5,7 +5,7 @@
 @import "./phoenix.css";
 @import "./live_view.css";
 @import "./spinner.css";
-@import "../node_modules/flatpickr/dist/flatpickr.css";
+@import "../node_modules/pikaday/css/pikaday.css";
 
 @layer base {
   h1 {
