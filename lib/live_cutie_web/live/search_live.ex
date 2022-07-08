@@ -18,7 +18,7 @@ defmodule LiveCutieWeb.SearchLive do
     send(self(), {:run_search, zip})
 
     socket = assign(socket, zip: zip, places: [], loading: true, search_complete: false)
-    {:ok, socket}
+
     {:noreply, socket}
   end
 
