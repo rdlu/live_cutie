@@ -98,11 +98,15 @@
             <h2 class="text-xl leading-6 font-semibold text-indigo-800">
               Pokémon <%= @selected_game.name %>
             </h2>
-            <span class={
-              "px-3 py-1 text-xs font-medium leading-5 rounded-full #{streaming_class(@selected_game)}"
-            }>
+            <button
+              class={
+                "px-3 py-1 text-xs font-medium leading-5 rounded-full #{streaming_class(@selected_game)}"
+              }
+              phx-value-id={@selected_game.id}
+              phx-click="toggle-status"
+            >
               <img src="/images/broadcast-tower-solid.svg" class="h-6 w-6" />
-            </span>
+            </button>
           </div>
           <div class="body px-8 py-4">
             <div class="row flex flex-wrap items-center justify-between text-base font-medium text-gray-500">

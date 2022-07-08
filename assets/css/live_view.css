@@ -144,3 +144,19 @@
 .invalid-feedback {
   @apply m-0 mt-2 text-sm text-red-600;
 }
+
+.status-on {
+  @apply bg-green-200 text-green-800;
+}
+
+.status-off {
+  @apply bg-red-200 text-red-800;
+}
+
+.status-on.phx-click-loading {
+  @apply bg-yellow-200 text-slate-800 transition-colors duration-750 ease-out;
+}
+
+.status-off.phx-click-loading {
+  @apply bg-yellow-200 text-slate-800 transition-colors duration-750 ease-out;
+}

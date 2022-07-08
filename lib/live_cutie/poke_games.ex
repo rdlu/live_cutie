@@ -75,6 +75,10 @@ defmodule LiveCutie.PokeGames do
     |> Repo.update()
   end
 
+  def toggle_status_poke_game(%PokeGame{} = poke_game) do
+    update_poke_game(poke_game, %{streaming: !poke_game.streaming})
+  end
+
   @doc """
   Deletes a poke_game.
 

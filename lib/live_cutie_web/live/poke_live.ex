@@ -122,20 +122,52 @@ defmodule LiveCutieWeb.PokeLive do
     {:noreply, socket}
   end
 
+  def handle_event("toggle-status", %{"id" => id}, socket) do
+    :timer.sleep(:timer.seconds(5))
+    game = PokeGames.get_poke_game!(id)
+
+    # Update the game's status to the opposite of its current status:
+    {:ok, game} = PokeGames.toggle_status_poke_game(game)
+
+    socket = assign(socket, selected_game: game)
+
+    # To avoid another database hit, update the loaded list
+    socket = update_loaded_list(socket, :games, game)
+
+    {:noreply, socket}
+  end
+
+  # find the matching item (target) in the current list of items
+  # change it, and update the in memory collection
+  defp update_loaded_list(socket, map_key, target) do
+    update(socket, map_key, &map_find_replace(&1, target))
+  end
+
+  defp map_find_replace(collection, target, key \\ :id) do
+    for item <- collection do
+      case Map.get(item, key) == Map.get(target, key) do
+        true -> target
+        _ -> item
+      end
+    end
+  end
+
   defp link_body(game) do
-    assigns = %{name: game.name}
+    img = if game.streaming, do: "play", else: "stop"
+
+    assigns = %{name: game.name, img: img}
 
     ~H"""
-    <img src="/images/play-circle-solid.svg" class="mr-2 h-6 w-6 text-indigo-400" />
+    <img src={"/images/#{@img}-circle.svg"} class="mr-2 h-6 w-6" />
     <%= @name %>
     """
   end
 
   defp streaming_class(game) do
     if game.streaming do
-      "bg-green-200 text-green-800"
+      "status-on"
     else
-      "bg-red-200 text-red-800"
+      "status-off"
     end
   end
 
