@@ -75,12 +75,11 @@ defmodule LiveCutieWeb.PokeLive do
   end
 
   def handle_event("save", %{"poke_game" => params}, socket) do
-    IO.inspect(params)
+    :timer.sleep(:timer.seconds(2))
 
     case PokeGames.create_poke_game(params) do
       {:ok, game} ->
         # Prepend newly-minted poke_game to list.
-        IO.inspect(game)
 
         socket =
           update(
@@ -107,13 +106,20 @@ defmodule LiveCutieWeb.PokeLive do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         # Assign errored changeset for form.
-        IO.inspect(changeset)
         socket = assign(socket, changeset: changeset)
         {:noreply, socket}
-
-      anyth ->
-        IO.inspect(anyth)
     end
+  end
+
+  def handle_event("validate", %{"poke_game" => params}, socket) do
+    changeset =
+      %PokeGames.PokeGame{}
+      |> PokeGames.change_poke_game(params)
+      |> Map.put(:action, :insert)
+
+    socket = assign(socket, changeset: changeset)
+
+    {:noreply, socket}
   end
 
   defp link_body(game) do
