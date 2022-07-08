@@ -154,9 +154,9 @@
 }
 
 .status-on.phx-click-loading {
-  @apply bg-yellow-200 text-slate-800 transition-colors duration-750 ease-out;
+  @apply bg-yellow-200 text-slate-800 transition-colors duration-700 ease-out;
 }
 
 .status-off.phx-click-loading {
-  @apply bg-yellow-200 text-slate-800 transition-colors duration-750 ease-out;
+  @apply bg-yellow-200 text-slate-800 transition-colors duration-700 ease-out;
 }

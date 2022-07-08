@@ -1,4 +1,6 @@
 defmodule LiveCutie.PokeGames do
+  @topic inspect(__MODULE__)
+
   @moduledoc """
   The PokeGames context.
   """
@@ -55,6 +57,7 @@ defmodule LiveCutie.PokeGames do
     %PokeGame{}
     |> PokeGame.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:stream_added)
   end
 
   @doc """
@@ -73,6 +76,7 @@ defmodule LiveCutie.PokeGames do
     poke_game
     |> PokeGame.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:stream_updated)
   end
 
   def toggle_status_poke_game(%PokeGame{} = poke_game) do
@@ -107,4 +111,21 @@ defmodule LiveCutie.PokeGames do
   def change_poke_game(%PokeGame{} = poke_game, attrs \\ %{}) do
     PokeGame.changeset(poke_game, attrs)
   end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(LiveCutie.PubSub, @topic)
+  end
+
+  # New function that encapsulates broadcast details.
+  defp broadcast({:ok, server}, event) do
+    Phoenix.PubSub.broadcast(
+      LiveCutie.PubSub,
+      @topic,
+      {event, server}
+    )
+
+    {:ok, server}
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
 end

@@ -4,6 +4,7 @@ defmodule LiveCutieWeb.PokeLive do
   alias LiveCutie.PokeGames
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: PokeGames.subscribe()
     games = PokeGames.list_poke_games()
 
     socket = assign(socket, games: games, selected_game: hd(games))
@@ -75,23 +76,8 @@ defmodule LiveCutieWeb.PokeLive do
   end
 
   def handle_event("save", %{"poke_game" => params}, socket) do
-    :timer.sleep(:timer.seconds(2))
-
     case PokeGames.create_poke_game(params) do
       {:ok, game} ->
-        # Prepend newly-minted poke_game to list.
-
-        socket =
-          update(
-            socket,
-            :games,
-            fn games -> [game | games] end
-          )
-
-        # Navigate to the new game's detail page.
-        # Invokes handle_params which already gets the
-        # game and sets it as the selected game.
-
         socket =
           push_patch(socket,
             to:
@@ -123,7 +109,6 @@ defmodule LiveCutieWeb.PokeLive do
   end
 
   def handle_event("toggle-status", %{"id" => id}, socket) do
-    :timer.sleep(:timer.seconds(5))
     game = PokeGames.get_poke_game!(id)
 
     # Update the game's status to the opposite of its current status:
@@ -132,6 +117,30 @@ defmodule LiveCutieWeb.PokeLive do
     socket = assign(socket, selected_game: game)
 
     # To avoid another database hit, update the loaded list
+    socket = update_loaded_list(socket, :games, game)
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:stream_added, game}, socket) do
+    socket =
+      update(
+        socket,
+        :games,
+        fn games -> [game | games] end
+      )
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:stream_updated, game}, socket) do
+    socket =
+      if game.id == socket.assigns.selected_game.id do
+        assign(socket, selected_game: game)
+      else
+        socket
+      end
+
     socket = update_loaded_list(socket, :games, game)
 
     {:noreply, socket}
