@@ -1,0 +1,52 @@
+<div id="infinite-scroll">
+  <h1>Monsters List</h1>
+  <div class="max-w-4xl mx-auto">
+    <div class="wrapper mb-4 align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b border-slate-300">
+      <table class="min-w-full">
+        <thead>
+          <tr>
+            <%= for {_, label} <- [national_id: "ID", name: "Name", types: "Types"] do %>
+              <th class="bg-transparent px-6 py-4 border-b border-slate-300 bg-indigo-700 text-base leading-4 font-medium uppercase tracking-wider text-center text-white">
+                <%= label %>
+              </th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody class="bg-white" id="monsters" phx-update="append">
+          <%= for monster <- @monsters do %>
+            <tr class="monster" id={"monster-#{monster.id}"}>
+              <td class="px-6 py-4 whitespace-nowrap border-b border-slate-300 text-lg leading-5 font-medium text-slate-900 text-center">
+                <%= monster.national_id %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap border-b border-slate-300 text-lg leading-5 font-medium text-slate-900 text-center">
+                <%= monster.name %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap border-b border-slate-300 text-lg leading-5 font-medium text-gray-100 text-center">
+                <%= for type <- monster.types do %>
+                  <strong
+                    class={
+                      "border border-gray-600 rounded-lg px-2 py-2 mr-2 shadow-sm text-xs uppercase type-#{type}"
+                    }
+                    style="text-shadow: 1px 1px 2px black;"
+                  >
+                    <%= type %>
+                  </strong>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <div
+        id="footer"
+        class="text-center bg-white max-w-4xl mx-auto text-lg py-8"
+        phx-hook="InfiniteScroll"
+        data-page-number={@page}
+      >
+        <div class="loader">
+          Loading More...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,12 +10,7 @@ defmodule LiveCutieWeb.MonstersLive do
   def mount(_params, _session, socket) do
     monsters = Monsters.list_monsters()
 
-    socket =
-      assign(socket,
-        monsters: monsters
-      )
-
-    {:noreply, socket}
+    socket = assign(socket, monsters: monsters)
 
     {:ok, socket, temporary_assigns: [monsters: []]}
   end

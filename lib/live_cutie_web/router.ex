@@ -27,6 +27,8 @@ defmodule LiveCutieWeb.Router do
     live "/poke", PokeLive
     live "/poke/new", PokeLive, :new
     live "/monsters", MonstersLive
+    live "/scroll", ScrollLive
+    live "/datepicker", DatePickerLive
   end
 
   # Other scopes may use custom stacks.
