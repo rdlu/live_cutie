@@ -1,0 +1,50 @@
+<div class="card bg-white shadow overflow-hidden rounded-lg">
+  <div class="header px-6 py-5 border-b border-gray-200 flex items-center flex-wrap justify-between">
+    <h2 class="text-xl leading-6 font-semibold text-indigo-800">
+      Pokémon <%= @selected_game.name %>
+    </h2>
+    <button
+      class={
+        "px-3 py-1 text-xs font-medium leading-5 rounded-full #{streaming_class(@selected_game)}"
+      }
+      phx-value-id={@selected_game.id}
+      phx-click="toggle-status"
+      phx-target={@myself}
+    >
+      <img src="/images/broadcast-tower-solid.svg" class="h-6 w-6" />
+    </button>
+  </div>
+  <div class="body px-8 py-4">
+    <div class="row flex flex-wrap items-center justify-between text-base font-medium text-gray-500">
+      <span class="inline-flex items-center justify-between">
+        <img src={platform_img(@selected_game)} class="mr-3 h-6 w-6 text-indigo-400" />
+        <%= @selected_game.platform %>
+      </span>
+      <span>
+        Generation <strong><%= @selected_game.generation %></strong>
+      </span>
+      <span>
+        Played? <strong class="capitalize"><%= @selected_game.played %></strong>
+      </span>
+      <span>
+        Favorite? <strong class="capitalize"><%= @selected_game.favorite %></strong>
+      </span>
+    </div>
+    <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">About</h3>
+    <div class="description">
+      <%= @selected_game.description %>
+    </div>
+    <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">Starters</h3>
+    <div class="starters">
+      <%= @selected_game.starters |> simple_list %>
+    </div>
+    <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">Legendary</h3>
+    <div class="text-sm leading-5 text-gray-900">
+      <%= @selected_game.legendary |> simple_list %>
+    </div>
+    <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">Cover</h3>
+    <div class="cover mx-auto flex items-center place-content-center">
+      <img src={@selected_game.box_image} class="mr-3 h-100 w-100" />
+    </div>
+  </div>
+</div>

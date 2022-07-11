@@ -19,5 +19,6 @@ defmodule LiveCutie.Repo.Migrations.CreatePokeGames do
     end
 
     create(index(:poke_games, [:related]))
+    create(unique_index(:poke_games, [:name]))
   end
 end

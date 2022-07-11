@@ -1,0 +1,75 @@
+<div>
+  <.form
+    let={f}
+    for={@changeset}
+    url="#"
+    phx-submit="save"
+    phx_change="validate"
+    phx-target={@myself}
+  >
+    <div class="field mb-4">
+      <%= label(f, :name, class: label_input_class()) %>
+      <%= text_input(f, :name,
+        autocomplete: "off",
+        phx_debounce: "2000",
+        class: text_input_class()
+      ) %>
+      <%= error_tag(f, :name) %>
+    </div>
+
+    <div class="field mb-4">
+      <%= label(f, :generation, class: label_input_class()) %>
+      <%= number_input(f, :generation,
+        autocomplete: "off",
+        phx_debounce: "blur",
+        class: text_input_class()
+      ) %>
+      <%= error_tag(f, :generation) %>
+    </div>
+
+    <div class="field mb-4">
+      <%= label(f, :platform, class: label_input_class()) %>
+      <%= text_input(f, :platform,
+        autocomplete: "off",
+        phx_debounce: "2000",
+        class: text_input_class()
+      ) %>
+      <%= error_tag(f, :platform) %>
+    </div>
+
+    <div class="field mb-4">
+      <%= label(f, :description, class: label_input_class()) %>
+      <%= textarea(f, :description,
+        autocomplete: "off",
+        phx_debounce: "2000",
+        class: text_input_class()
+      ) %>
+      <%= error_tag(f, :description) %>
+    </div>
+
+    <div class="field mb-4">
+      <%= label(f, :played, "Played?", class: label_input_class()) %>
+      <%= select(f, :played, [:yes, :no, :soon],
+        class: text_input_class(),
+        phx_debounce: "blur"
+      ) %>
+      <%= error_tag(f, :played) %>
+    </div>
+
+    <div class="field mb-4">
+      <%= label(f, :favorite, "Favorite?", class: label_input_class(), phx_debounce: "blur") %>
+      <%= checkbox(f, :favorite,
+        class:
+          "w-6 h-6 focus:outline-none:border-indigo-300:ring:ring-indigo-300 border border-slate-400 rounded-md transition duration-150 ease-in-out text-base text-xl"
+      ) %>
+      <%= error_tag(f, :favorite) %>
+    </div>
+
+    <%= submit("Save", phx_disable_with: "Saving...", class: submit_class()) %>
+
+    <%= live_patch("Cancel",
+      to: Routes.live_path(@socket, @target),
+      class: submit_class()
+    ) %>
+  </.form>
+</div>

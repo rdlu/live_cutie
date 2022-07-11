@@ -1,148 +1,20 @@
 <h1>Streaming Pokemon</h1>
 <div id="games" class="flex">
-  <div class="sidebar w-48 bg-indigo-800 pt-4 pb-4 text-indigo-300">
-    <nav class="flex-1 px-2 bg-indigo-800">
-      <%= for game <- @games do %>
-        <div>
-          <%= live_patch(link_body(game),
-            to:
-              Routes.live_path(
-                @socket,
-                __MODULE__,
-                slug: game.slug
-              ),
-            class:
-              "text-sm text-white leading-5 font-medium flex items-center px-2 py-3 rounded-md mb-2 hover:text-black hover:bg-indigo-300 #{if(game == @selected_game, do: "active bg-indigo-900")}"
-          ) %>
-        </div>
-      <% end %>
-      <%= live_patch("New Game",
-        to: Routes.poke_path(@socket, :new),
-        class:
-          "text-sm text-white leading-5 font-medium flex items-center px-2 py-3 rounded-md mb-2 hover:text-black hover:bg-indigo-300"
-      ) %>
-    </nav>
-  </div>
+  <.live_component
+    module={PokeLive.Sidebar}
+    id="sidebar"
+    target={__MODULE__}
+    games={@games}
+    selected_game={@selected_game}
+  />
   <div class="main flex flex-1">
     <div class="wrapper flex-1 max-w-2xl mx-auto px-6">
-      <%= if @live_action == :new do %>
-        <.form let={f} for={@changeset} url="#" phx-submit="save" phx_change="validate">
-          <div class="field mb-4">
-            <%= label(f, :name, class: label_input_class()) %>
-            <%= text_input(f, :name,
-              autocomplete: "off",
-              phx_debounce: "2000",
-              class: text_input_class()
-            ) %>
-            <%= error_tag(f, :name) %>
-          </div>
-
-          <div class="field mb-4">
-            <%= label(f, :generation, class: label_input_class()) %>
-            <%= number_input(f, :generation,
-              autocomplete: "off",
-              phx_debounce: "blur",
-              class: text_input_class()
-            ) %>
-            <%= error_tag(f, :generation) %>
-          </div>
-
-          <div class="field mb-4">
-            <%= label(f, :platform, class: label_input_class()) %>
-            <%= text_input(f, :platform,
-              autocomplete: "off",
-              phx_debounce: "2000",
-              class: text_input_class()
-            ) %>
-            <%= error_tag(f, :platform) %>
-          </div>
-
-          <div class="field mb-4">
-            <%= label(f, :description, class: label_input_class()) %>
-            <%= textarea(f, :description,
-              autocomplete: "off",
-              phx_debounce: "2000",
-              class: text_input_class()
-            ) %>
-            <%= error_tag(f, :description) %>
-          </div>
-
-          <div class="field mb-4">
-            <%= label(f, :played, "Played?", class: label_input_class()) %>
-            <%= select(f, :played, [:yes, :no, :soon],
-              class: text_input_class(),
-              phx_debounce: "blur"
-            ) %>
-            <%= error_tag(f, :played) %>
-          </div>
-
-          <div class="field mb-4">
-            <%= label(f, :favorite, "Favorite?", class: label_input_class(), phx_debounce: "blur") %>
-            <%= checkbox(f, :favorite,
-              class:
-                "w-6 h-6 focus:outline-none:border-indigo-300:ring:ring-indigo-300 border border-slate-400 rounded-md transition duration-150 ease-in-out text-base text-xl"
-            ) %>
-            <%= error_tag(f, :favorite) %>
-          </div>
-
-          <%= submit("Save", phx_disable_with: "Saving...", class: submit_class()) %>
-
-          <%= live_patch("Cancel",
-            to: Routes.live_path(@socket, __MODULE__),
-            class: submit_class()
-          ) %>
-        </.form>
-      <% else %>
-        <div class="card bg-white shadow overflow-hidden rounded-lg">
-          <div class="header px-6 py-5 border-b border-gray-200 flex items-center flex-wrap justify-between">
-            <h2 class="text-xl leading-6 font-semibold text-indigo-800">
-              Pokémon <%= @selected_game.name %>
-            </h2>
-            <button
-              class={
-                "px-3 py-1 text-xs font-medium leading-5 rounded-full #{streaming_class(@selected_game)}"
-              }
-              phx-value-id={@selected_game.id}
-              phx-click="toggle-status"
-            >
-              <img src="/images/broadcast-tower-solid.svg" class="h-6 w-6" />
-            </button>
-          </div>
-          <div class="body px-8 py-4">
-            <div class="row flex flex-wrap items-center justify-between text-base font-medium text-gray-500">
-              <span class="inline-flex items-center justify-between">
-                <img src={platform_img(@selected_game)} class="mr-3 h-6 w-6 text-indigo-400" />
-                <%= @selected_game.platform %>
-              </span>
-              <span>
-                Generation <strong><%= @selected_game.generation %></strong>
-              </span>
-              <span>
-                Played? <strong class="capitalize"><%= @selected_game.played %></strong>
-              </span>
-              <span>
-                Favorite? <strong class="capitalize"><%= @selected_game.favorite %></strong>
-              </span>
-            </div>
-            <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">About</h3>
-            <div class="description">
-              <%= @selected_game.description %>
-            </div>
-            <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">Starters</h3>
-            <div class="starters">
-              <%= @selected_game.starters |> simple_list %>
-            </div>
-            <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">Legendary</h3>
-            <div class="text-sm leading-5 text-gray-900">
-              <%= @selected_game.legendary |> simple_list %>
-            </div>
-            <h3 class="mt-8 text-base leading-5 font-medium text-gray-500 mb-2">Cover</h3>
-            <div class="cover mx-auto flex items-center place-content-center">
-              <img src={@selected_game.box_image} class="mr-3 h-100 w-100" />
-            </div>
-          </div>
-        </div>
-      <% end %>
+      <.live_component
+        module={@main_module}
+        id={@main_id}
+        target={__MODULE__}
+        selected_game={@selected_game}
+      />
     </div>
   </div>
 </div>

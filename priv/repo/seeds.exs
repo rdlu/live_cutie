@@ -68,7 +68,7 @@ PokeGames.create_poke_game(%{
   description: "This is a poke game",
   platform: "Game Boy",
   generation: 1,
-  box_image: "images/poke_games/yellow.jpg",
+  box_image: "/images/poke_games/yellow.jpg",
   favorite: true,
   played: :yes,
   legendary: ["Articuno", "Zapdos", "Moltres", "Mewtwo"],
@@ -81,7 +81,7 @@ PokeGames.create_poke_game(%{
   description: "This is a poke game",
   platform: "Nintendo DS",
   generation: 4,
-  box_image: "images/poke_games/heartgold.jpg",
+  box_image: "/images/poke_games/heartgold.jpg",
   favorite: true,
   played: :soon,
   legendary: [
@@ -109,7 +109,7 @@ PokeGames.create_poke_game(%{
   description: "This is a poke game",
   platform: "Nintendo DS",
   generation: 4,
-  box_image: "images/poke_games/soulsilver.jpg",
+  box_image: "/images/poke_games/soulsilver.jpg",
   favorite: true,
   played: :soon,
   legendary: [

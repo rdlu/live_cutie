@@ -2,9 +2,10 @@ defmodule LiveCutie.PokeGames.PokeGame do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @default_box_image "https://placeholder.pics/svg/300/DEDEDE/555555/No%20cover%20yet"
+
   schema "poke_games" do
-    field :box_image, :string,
-      default: "https://placeholder.pics/svg/300/DEDEDE/555555/No%20cover%20yet"
+    field :box_image, :string, default: @default_box_image
 
     field :description, :string
     field :favorite, :boolean, default: false
@@ -24,17 +25,22 @@ defmodule LiveCutie.PokeGames.PokeGame do
   @doc false
   def changeset(poke_game, attrs) do
     poke_game
-    |> cast(attrs, [
-      :name,
-      :generation,
-      :platform,
-      :description,
-      :starters,
-      :legendary,
-      :played,
-      :favorite,
-      :streaming
-    ])
+    |> cast(
+      attrs,
+      [
+        :name,
+        :generation,
+        :platform,
+        :description,
+        :starters,
+        :legendary,
+        :played,
+        :favorite,
+        :streaming,
+        :box_image
+      ],
+      empty_values: [:box_image]
+    )
     |> update_slug()
     |> validate_required([
       :name,
@@ -49,11 +55,12 @@ defmodule LiveCutie.PokeGames.PokeGame do
     |> validate_length(:starters, min: 1, max: 3)
     |> validate_number(:generation, greater_than: 0)
     |> validate_inclusion(:platform, platforms_list())
+    |> validate_length(:box_image, min: 1)
+    |> unique_constraint(:slug)
+    |> unique_constraint(:name)
   end
 
   defp update_slug(changeset, source \\ :name) do
-    IO.inspect(changeset)
-
     if changeset.changes[source] do
       changeset
       |> put_change(:slug, Slug.slugify(changeset.changes[source] || ""))

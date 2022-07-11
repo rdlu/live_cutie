@@ -26,6 +26,7 @@ defmodule LiveCutieWeb.Router do
     live "/filter", FilterLive
     live "/poke", PokeLive
     live "/poke/new", PokeLive, :new
+    live "/poke/:slug", PokeLive, :show
     live "/monsters", MonstersLive
     live "/scroll", ScrollLive
     live "/datepicker", DatePickerLive

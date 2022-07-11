@@ -6,8 +6,8 @@ defmodule LiveCutieWeb.MonstersLive do
   alias LiveCutieWeb.Components.PerPage
   alias LiveCutieWeb.ParamParser
 
-  @permitted_sorts ~w(national_id name types)a
-  @permitted_orders ~w(asc desc)a
+  @permitted_sorts ~W(national_id name types)a
+  @permitted_orders ~W(asc desc)a
   @per_page_default 10
 
   def mount(_params, _session, socket) do
@@ -108,7 +108,10 @@ defmodule LiveCutieWeb.MonstersLive do
   defp emoji(:desc), do: " ⮭"
 
   defp param_or_first_permitted(params, key, permitted) do
-    value = params[key] |> String.to_atom()
+    value = params[key] |> to_atom()
     if value in permitted, do: value, else: hd(permitted)
   end
+
+  defp to_atom(nil), do: ""
+  defp to_atom(key), do: String.to_atom(key)
 end

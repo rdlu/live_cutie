@@ -6,6 +6,6 @@ defmodule LiveCutie.Repo.Migrations.AddSlugToPokeGames do
       add(:slug, :string, null: false)
     end
 
-    create(index(:poke_games, [:slug], comment: "Index Slugs"))
+    create(unique_index(:poke_games, [:slug]))
   end
 end
