@@ -7,7 +7,7 @@ defmodule LiveCutieWeb.Components.PokeLive.MainCard do
     game = PokeGames.get_poke_game!(id)
 
     # Update the game's status to the opposite of its current status:
-    {:ok, game} = PokeGames.toggle_status_poke_game(game)
+    {:ok, _} = PokeGames.toggle_status_poke_game(game)
 
     {:noreply, socket}
   end
@@ -20,8 +20,12 @@ defmodule LiveCutieWeb.Components.PokeLive.MainCard do
     end
   end
 
-  defp platform_img(game) do
-    "/images/hardware/#{Slug.slugify(game.platform)}.svg"
+  defp platform_img(%{platform: nil}) do
+    "/images/question-circle.svg"
+  end
+
+  defp platform_img(%{platform: platform}) do
+    "/images/hardware/#{Slug.slugify(platform)}.svg"
   end
 
   defp simple_list(list) do

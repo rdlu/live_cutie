@@ -14,7 +14,7 @@ defmodule LiveCutieWeb.PokeLive do
   end
 
   def handle_params(%{"slug" => slug}, _url, socket) do
-    game = PokeGames.get_by_slug(slug)
+    game = PokeGames.get_by_slug(slug) || %PokeGames.PokeGame{}
 
     assign_collection(socket, game, "What's up #{game.name}?", PokeLive.MainCard, "main-card")
   end
