@@ -6,11 +6,20 @@ defmodule LiveCutieWeb.MonstersLive do
   alias LiveCutieWeb.Components.PerPage
   alias LiveCutieWeb.ParamParser
 
-  @permitted_sort_bys ~w(national_id name types)
-  @permitted_sort_orders ~w(asc desc)
+  @permitted_sorts ~w(national_id name types)a
+  @permitted_orders ~w(asc desc)a
   @per_page_default 10
 
   def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign_pagination(
+        1,
+        @per_page_default,
+        hd(@permitted_sorts),
+        hd(@permitted_orders)
+      )
+
     {:ok, socket, temporary_assigns: [monsters: []]}
   end
 
@@ -18,54 +27,62 @@ defmodule LiveCutieWeb.MonstersLive do
     page = ParamParser.param_to_integer(params["page"], 1)
     per_page = ParamParser.param_to_integer(params["per_page"], @per_page_default)
 
-    sort_by =
+    sort =
       params
-      |> param_or_first_permitted("sort_by", @permitted_sort_bys)
-      |> String.to_atom()
+      |> param_or_first_permitted("sort", @permitted_sorts)
 
-    sort_order =
+    order =
       params
-      |> param_or_first_permitted("sort_order", @permitted_sort_orders)
-      |> String.to_atom()
-
-    paginate_options = %{page: page, per_page: per_page}
-    sort_options = %{sort_by: sort_by, sort_order: sort_order}
-
-    monsters = Monsters.list_monsters(paginate: paginate_options, sort: sort_options)
+      |> param_or_first_permitted("order", @permitted_orders)
 
     socket =
-      assign(socket,
-        pagination: Map.merge(paginate_options, sort_options),
-        monsters: monsters
-      )
+      socket
+      |> assign_pagination(page, per_page, sort, order)
+      |> load_monsters()
 
     {:noreply, socket}
   end
 
   def handle_info({PerPage, :changed, per_page}, socket) do
     current_pagination = socket.assigns.pagination
-    paginate_options = %{page: current_pagination.page, per_page: per_page}
-
-    sort_options = %{
-      sort_by: current_pagination.sort_by,
-      sort_order: current_pagination.sort_order
-    }
-
-    monsters = Monsters.list_monsters(paginate: paginate_options, sort: sort_options)
+    page = current_pagination.page
+    sort = current_pagination.sort
+    order = current_pagination.order
 
     socket =
-      assign(socket,
-        pagination: Map.merge(current_pagination, paginate_options),
-        monsters: monsters
-      )
+      socket
+      |> assign_pagination(page, per_page, sort, order)
+      |> load_monsters()
 
     {:noreply, socket}
   end
 
+  defp assign_pagination(socket, page, per_page, sort, order) do
+    socket
+    |> assign(pagination: %{page: page, per_page: per_page, sort: sort, order: order})
+  end
+
+  defp load_monsters(socket) do
+    current_pagination = socket.assigns.pagination
+
+    paginate_options = Map.take(current_pagination, ~w(page per_page)a)
+
+    sort_options = %{
+      sort_by: current_pagination.sort,
+      sort_order: current_pagination.order
+    }
+
+    IO.inspect(socket)
+
+    monsters = Monsters.list_monsters(paginate: paginate_options, sort: sort_options)
+
+    assign(socket, monsters: monsters)
+  end
+
   defp sort_link(socket, text, sort_by, options) do
     text =
-      if sort_by == options.sort_by do
-        text <> emoji(options.sort_order)
+      if sort_by == options.sort do
+        text <> emoji(options.order)
       else
         text
       end
@@ -75,8 +92,8 @@ defmodule LiveCutieWeb.MonstersLive do
         Routes.live_path(
           socket,
           __MODULE__,
-          sort_order: toggle_sort_order(options.sort_order),
-          sort_by: sort_by,
+          order: toggle_order(options.order),
+          sort: sort_by,
           page: options.page,
           per_page: options.per_page
         ),
@@ -84,14 +101,14 @@ defmodule LiveCutieWeb.MonstersLive do
     )
   end
 
-  defp toggle_sort_order(:asc), do: :desc
-  defp toggle_sort_order(:desc), do: :asc
+  defp toggle_order(:asc), do: :desc
+  defp toggle_order(:desc), do: :asc
 
   defp emoji(:asc), do: " ⮯"
   defp emoji(:desc), do: " ⮭"
 
   defp param_or_first_permitted(params, key, permitted) do
-    value = params[key]
+    value = params[key] |> String.to_atom()
     if value in permitted, do: value, else: hd(permitted)
   end
 end

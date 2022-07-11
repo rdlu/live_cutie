@@ -5,7 +5,7 @@
       @target,
       "Previous",
       @page - 1,
-      @options,
+      @extra_params,
       "previous rounded-l-md"
     ) %>
   <% end %>
@@ -15,7 +15,7 @@
       @target,
       "First",
       1,
-      @options,
+      @extra_params,
       "first"
     ) %>
   <% end %>
@@ -25,7 +25,7 @@
       @target,
       i,
       i,
-      @options,
+      @extra_params,
       if(i == @page, do: "active bg-indigo-700 text-white")
     ) %>
   <% end %>
@@ -34,7 +34,7 @@
     @target,
     "Next",
     @page + 1,
-    @options,
+    @extra_params,
     "next rounded-r-md"
   ) %>
 </div>
