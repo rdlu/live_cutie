@@ -2,6 +2,7 @@ defmodule LiveCutieWeb.MonstersLive do
   use LiveCutieWeb, :live_view
 
   alias LiveCutie.Monsters
+  alias LiveCutieWeb.Components.Pagination
 
   @permitted_sort_bys ~w(national_id name types)
   @permitted_sort_orders ~w(asc desc)
@@ -36,7 +37,7 @@ defmodule LiveCutieWeb.MonstersLive do
 
     socket =
       assign(socket,
-        options: Map.merge(paginate_options, sort_options),
+        pagination: Map.merge(paginate_options, sort_options),
         monsters: monsters
       )
 
@@ -52,30 +53,14 @@ defmodule LiveCutieWeb.MonstersLive do
           Routes.live_path(
             socket,
             __MODULE__,
-            page: socket.assigns.options.page,
+            page: socket.assigns.pagination.page,
             per_page: per_page,
-            sort_by: socket.assigns.options.sort_by,
-            sort_order: socket.assigns.options.sort_order
+            sort_by: socket.assigns.pagination.sort_by,
+            sort_order: socket.assigns.pagination.sort_order
           )
       )
 
     {:noreply, socket}
-  end
-
-  defp pagination_link(socket, text, page, options, class) do
-    live_patch(text,
-      to:
-        Routes.live_path(
-          socket,
-          __MODULE__,
-          sort_order: options.sort_order,
-          sort_by: options.sort_by,
-          page: page,
-          per_page: options.per_page
-        ),
-      class:
-        "#{class} hover:bg-slate-300 -ml-px inline-flex items-center px-3 py-2 border border-slate-300 bg-white text-base leading-5 font-medium text-slate-600 no-underline"
-    )
   end
 
   defp sort_link(socket, text, sort_by, options) do

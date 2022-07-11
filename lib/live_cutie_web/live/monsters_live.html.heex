@@ -6,7 +6,7 @@
       name="per-page"
       class="appearance-none bg-slate-200 border border-slate-400 text-slate-700 py-1 px-3 rounded-lg leading-tight font-semibold cursor-pointer text-sm mx-1 focus:outline-none focus:bg-slate-200 focus:border-slate-500"
     >
-      <%= options_for_select([5, 10, 15, 20], @options.per_page) %>
+      <%= options_for_select([5, 10, 15, 20], @pagination.per_page) %>
     </select>
     <label for="per-page">per page</label>
   </form>
@@ -16,7 +16,7 @@
         <tr>
           <%= for {field, label} <- [national_id: "ID", name: "Name", types: "Types"] do %>
             <th class="bg-transparent px-6 py-4 border-b border-slate-300 bg-indigo-700 text-base leading-4 font-medium uppercase tracking-wider text-center text-white">
-              <%= sort_link(@socket, label, field, @options) %>
+              <%= sort_link(@socket, label, field, @pagination) %>
             </th>
           <% end %>
         </tr>
@@ -47,42 +47,13 @@
       </tbody>
     </table>
     <div class="footer text-center bg-white max-w-4xl mx-auto text-lg py-8">
-      <div class="pagination inline-flex shadow-sm">
-        <%= if @options.page > 1 do %>
-          <%= pagination_link(
-            @socket,
-            "Previous",
-            @options.page - 1,
-            @options,
-            "previous rounded-l-md"
-          ) %>
-        <% end %>
-        <%= if @options.page > 3 do %>
-          <%= pagination_link(
-            @socket,
-            "First",
-            1,
-            @options,
-            "first"
-          ) %>
-        <% end %>
-        <%= for i <- (@options.page - 2)..(@options.page + 2), i > 0 do %>
-          <%= pagination_link(
-            @socket,
-            i,
-            i,
-            @options,
-            if(i == @options.page, do: "active bg-indigo-700 text-white")
-          ) %>
-        <% end %>
-        <%= pagination_link(
-          @socket,
-          "Next",
-          @options.page + 1,
-          @options,
-          "next rounded-r-md"
-        ) %>
-      </div>
+      <.live_component
+        module={Pagination}
+        id="pagination"
+        target={__MODULE__}
+        page={@pagination.page}
+        options={@pagination}
+      />
     </div>
   </div>
 </div>

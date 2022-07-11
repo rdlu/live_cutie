@@ -1,0 +1,40 @@
+<div class="pagination inline-flex shadow-sm">
+  <%= if @page > 1 do %>
+    <%= pagination_link(
+      @socket,
+      @target,
+      "Previous",
+      @page - 1,
+      @options,
+      "previous rounded-l-md"
+    ) %>
+  <% end %>
+  <%= if @page > 3 do %>
+    <%= pagination_link(
+      @socket,
+      @target,
+      "First",
+      1,
+      @options,
+      "first"
+    ) %>
+  <% end %>
+  <%= for i <- (@page - 2)..(@page + 2), i > 0 do %>
+    <%= pagination_link(
+      @socket,
+      @target,
+      i,
+      i,
+      @options,
+      if(i == @page, do: "active bg-indigo-700 text-white")
+    ) %>
+  <% end %>
+  <%= pagination_link(
+    @socket,
+    @target,
+    "Next",
+    @page + 1,
+    @options,
+    "next rounded-r-md"
+  ) %>
+</div>
