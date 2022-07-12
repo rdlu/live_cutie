@@ -1,14 +1,12 @@
 <div class="sidebar w-48 bg-indigo-800 pt-4 pb-4 text-indigo-300">
-  <nav class="flex-1 px-2 bg-indigo-800">
-    <%= for game <- @games do %>
-      <div>
-        <%= live_patch(link_body(game),
-          to: Routes.poke_path(@socket, :show, game.slug),
-          class:
-            "text-sm text-white leading-5 font-medium flex items-center px-2 py-3 rounded-md mb-2 hover:text-black hover:bg-indigo-300 #{if(game == @selected_game, do: "active bg-indigo-900")}"
-        ) %>
-      </div>
-    <% end %>
+  <nav id="stream-list" class="flex-1 px-2 bg-indigo-800">
+    <%= for game <- @games do
+      live_patch(link_body(game),
+        to: Routes.poke_path(@socket, :show, game.slug),
+        class:
+          "text-sm text-white leading-5 font-medium flex items-center px-2 py-3 rounded-md mb-2 hover:text-black hover:bg-indigo-300 #{if(game == @selected_game, do: "active bg-indigo-900")}"
+      )
+    end %>
     <%= live_patch("New Game",
       to: Routes.poke_path(@socket, :new),
       class:
