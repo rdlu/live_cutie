@@ -2,16 +2,16 @@
 <div id="slider" class="max-w-lg mx-auto text-center">
   <div class="card bg-white rounded-lg shadow-lg">
     <div class="content p-6">
-      <div class="level inline-flex items-center mb-8">
+      <div id="current-level" class="level inline-flex items-center mb-8">
         <img src="images/fan-solid.svg" class="w-10 pr-2" />
         <span class="text-xl font-semibold text-slate-700">
           The current level is <strong><%= Btus.human_level(@level) %></strong>.
         </span>
       </div>
-      <form phx-change="update">
+      <form id="update-level" phx-change="update">
         <input type="range" min="0" max="4" name="level" value="2" phx-debounce="250" />
       </form>
-      <div class="btus text-2xl leading-none text-slate-900 mt-4">
+      <div id="current-btu" class="btus text-2xl leading-none text-slate-900 mt-4">
         <strong><%= @btus %></strong> BTU/h
       </div>
     </div>
