@@ -1,6 +1,6 @@
 <h1>Cute Pets</h1>
 <div id="filter">
-  <form id="max-w-xl mx-auto mb-4" phx-change="filter">
+  <form id="max-w-xl mx-auto mb-4" id="change-filter" phx-change="filter">
     <div class="filters flex items-baseline justify-around">
       <select
         name="species"
@@ -25,7 +25,10 @@
   </form>
   <div class="pets flex flex-wrap justify-center">
     <%= for pet <- @pets do %>
-      <div class="card flex flex-col m-6 max-w-sm rounded bg-slate-100 overflow-hidden shadow-lg place-content-around">
+      <div
+        id={"pet-#{pet.id}"}
+        class="card flex flex-col m-6 max-w-sm rounded bg-slate-100 overflow-hidden shadow-lg place-content-around"
+      >
         <img src={pet.image} />
         <div class="content px-6 py-4 mt-2 flex justify-between">
           <div class="name pb-3 text-center text-slate-900 font-bold text-xl">
