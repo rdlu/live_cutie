@@ -1,6 +1,6 @@
 defmodule LiveCutie.Repositories.Places do
   def search_by_zip(zip) do
-    :timer.sleep(2000)
+    if Mix.env() == :dev, do: :timer.sleep(2000)
 
     list_stores()
     |> Enum.filter(&String.starts_with?(&1.zip, zip))
